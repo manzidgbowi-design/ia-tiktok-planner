@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA TikTok Scheduler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background: #ff0050;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🤖 IA TikTok Planner</h2>
+
+<p>Choisis une heure pour poster ta vidéo</p>
+
+<input type="time" id="heure">
+<br>
+<button onclick="planifier()">Planifier</button>
+
+<p id="status"></p>
+<p id="reco"></p>
+
+<script>
+// Demande autorisation notifications
+if ("Notification" in window) {
+  Notification.requestPermission();
+}
+
+let heurePost = null;
+
+function planifier() {
+  heurePost = document.getElementById("heure").value;
+  document.getElementById("status").innerText =
+    "✅ Publication prévue à " + heurePost;
+}
+
+// IA simple : heure recommandée
+function heureOptimale() {
+  const heures = ["12:00", "18:00", "20:00", "22:00"];
+  return heures[Math.floor(Math.random() * heures.length)];
+}
+
+document.getElementById("reco").innerText =
+  "💡 Heure recommandée aujourd’hui : " + heureOptimale();
+
+// Vérification chaque minute
+setInterval(() => {
+  if (!heurePost) return;
+
+  const maintenant = new Date();
+  const heureActuelle =
+    maintenant.getHours().toString().padStart(2, "0") + ":" +
+    maintenant.getMinutes().toString().padStart(2, "0");
+
+  if (heureActuelle === heurePost) {
+    notifier();
+    heurePost = null;
+  }
+}, 60000);
+
+function notifier() {
+  if ("Notification" in window) {
+    new Notification("📢 TikTok Time !", {
+      body: "C’est l’heure de poster ta vidéo 🚀"
+    });
+  }
+  alert("Il est l’heure de poster sur TikTok !");
+  window.open("https://www.tiktok.com/upload", "_blank");
+}
+</script>
+
+</body>
+</html>
